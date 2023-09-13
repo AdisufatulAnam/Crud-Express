@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-//import express validator.
-const { body, validationResult }= require('express-validator');
+//import express validator
+const { body, validationResult } = require('express-validator');
 
 //import database
 const connection = require('../config/database');
-// const { ResultWithContext } = require('express-validator/src/chain');
 
 /**
  * INDEX POSTS
@@ -28,8 +27,12 @@ router.get('/', function (req, res) {
         }
     });
 });
-// STORE POST
-router.post('/store',[
+
+/**
+ * STORE POST
+ */
+ router.post('/store', [
+
     //validation
     body('title').notEmpty(),
     body('content').notEmpty()
@@ -38,26 +41,27 @@ router.post('/store',[
 
     const errors = validationResult(req);
 
-    if(!errors.isEmpty()) { 
+    if (!errors.isEmpty()) {
         return res.status(422).json({
             errors: errors.array()
         });
     }
 
-    //define formmData
+    //define formData
     let formData = {
         title: req.body.title,
         content: req.body.content
     }
-    //insert query 
-    connection.query('INSERT INTO posts SET ?', formData, function (err, rows){
+
+    // insert query
+    connection.query('INSERT INTO posts SET ?', formData, function (err, rows) {
         //if(err) throw err
-        if(err){
+        if (err) {
             return res.status(500).json({
                 status: false,
-                message: 'internal Sever Error',
+                message: 'Internal Server Error',
             })
-        } else{
+        } else {
             return res.status(201).json({
                 status: true,
                 message: 'Insert Data Successfully',
@@ -65,10 +69,13 @@ router.post('/store',[
             })
         }
     })
-} );
 
-//SHOW POST
-router.get('/(:id)', function (req, res) {
+});
+
+/**
+ * SHOW POST
+ */
+ router.get('/(:id)', function (req, res) {
 
     let id = req.params.id;
 
@@ -97,8 +104,52 @@ router.get('/(:id)', function (req, res) {
             })
         }
     })
-})
+});
 
+/**
+ * UPDATE POST
+ */
+ router.patch('/update/:id', [
 
+    //validation
+    body('title').notEmpty(),
+    body('content').notEmpty()
+
+], (req, res) => {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            errors: errors.array()
+        });
+    }
+
+    //id post
+    let id = req.params.id;
+
+    //data post
+    let formData = {
+        title: req.body.title,
+        content: req.body.content
+    }
+
+    // update query
+    connection.query(`UPDATE posts SET ? WHERE id = ${id}`, formData, function (err, rows) {
+        //if(err) throw err
+        if (err) {
+            return res.status(500).json({
+                status: false,
+                message: 'Internal Server Error',
+            })
+        } else {
+            return res.status(200).json({
+                status: true,
+                message: 'Update Data Successfully!'
+            })
+        }
+    })
+
+});
 
 module.exports = router;
