@@ -6,6 +6,8 @@ const { body, validationResult } = require('express-validator');
 
 //import database
 const connection = require('../config/database');
+//validasi batas data masuk.s
+const validateDataLength= require('./validateDataLength');
 
 /**
  * INDEX POSTS
@@ -31,12 +33,14 @@ router.get('/', function (req, res) {
 /**
  * STORE POST
  */
- router.post('/store', [
+ router.post('/store',[
 
     //validation
-    body('title').notEmpty(),
-    body('content').notEmpty()
-
+    body('title').notEmpty().withMessage('title tidak boleh kosong')
+    .isLength({max:4}).withMessage('input tidak boleh lebih dari 4'),
+    body('content').notEmpty().withMessage('content tidak boleh kosong')
+    .isLength({max: 4}).withMessage('input tidak boleh lebih dari 4')
+    
 ], (req, res) => {
 
     const errors = validationResult(req);
@@ -113,8 +117,8 @@ router.get('/', function (req, res) {
  router.patch('/update/:id', [
 
     //validation
-    body('title').notEmpty(),
-    body('content').notEmpty()
+    body('title').notEmpty().withMessage('titile tidak boleh kosong'),
+    body('content').notEmpty().withMessage('content tidak boleh kosong')
 
 ], (req, res) => {
 
