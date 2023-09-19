@@ -10,7 +10,7 @@ const connection = require('../config/database');
 // const validateDataLength= require('./validateDataLength');
 
 /**
- * INDEX POSTS
+ * INDEX POSTS 
  */
 router.get('/', function (req, res) {
     //query
@@ -36,10 +36,10 @@ router.get('/', function (req, res) {
  router.post('/store',[
 
     //validation
-    body('title').notEmpty().withMessage('title tidak boleh kosong')
-    .isLength({min: 3, max:4}).withMessage('input tidak boleh lebih dari 4'),
+    body('title').notEmpty().withMessage('title tidak boleh kosong'),
+    // .isLength({min: 3, max:4}).withMessage('input tidak boleh lebih dari 4'),
     body('content').notEmpty().withMessage('content tidak boleh kosong')
-    .isLength({min: 3, max: 4}).withMessage('input tidak boleh lebih dari 4')
+    // .isLength({min: 3, max: 4}).withMessage('input tidak boleh lebih dari 4')
     
 ], (req, res) => {
 
